@@ -17,7 +17,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [account, setAccount] = useState("");
   const [marketplace, setMarketplace]= useState({});
-  const [nftitem, setNFTitem] = useState({})
+  
 
 
 
@@ -39,7 +39,7 @@ function App() {
         const address = await signer.getAddress();
         setAccount(address);
         setLoading(false)
-        let marketplaceAddress = "0xD3b1bC1d6528D4e9b6D980C19d4F9A668bFB00C5";
+        let marketplaceAddress = "0x5f94CdaD454e8a1bD5334092845aCD714d1DfF2e";
        
 
         const marketplacecontract = new ethers.Contract(
@@ -73,9 +73,10 @@ function App() {
       <Nav account={account}/>
       <Routes>
         <Route path="/" element={<Home/>}></Route>
-        <Route path="/all-nft" element={<NFTs marketplace={marketplace} setNFTitem={setNFTitem} />}></Route>
+        <Route path="/all-nft" element={<NFTs marketplace={marketplace} />}></Route>
+        {/* <Route path="/all-nft" element={<NFTs marketplace={marketplace} setNFTitem={setNFTitem} />}></Route> */}
         <Route path="/create" element={<Create marketplace={marketplace}  />}></Route>
-        <Route path="/info" element={<Info nftitem={nftitem} />}></Route>
+        {/* <Route path="/info" element={<Info nftitem={nftitem} />}></Route> */}
       </Routes>
       </div>
     </div>

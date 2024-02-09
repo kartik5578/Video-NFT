@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import Cards from './Cards'
+import Info from './Info';
 import { toast } from 'react-toastify';
+import { ethers } from 'ethers';
 
-function NFTs({ marketplace, setNFTitem}) {
+function NFTs({ marketplace}) {
+
   useEffect(()=>{
     document.title = "NFT Museum ETH"
 }, []);
 
+  const [toggle, setToggle] = useState(false)
   const [loading, setLoading] = useState(true)
   const [items, setItems] = useState([])
+  const [nftitem, setNFTitem] = useState({})
+
   const loadMarketplaceItems = async () => {
    
     const itemCount = await marketplace.itemCount()
@@ -42,7 +48,8 @@ function NFTs({ marketplace, setNFTitem}) {
   }
 
   const buyMarketItem = async (item) => {
-   const tx = await (await marketplace.viewitem(item.itemId, { value: 0 }))
+    console.log(item);
+   const tx = await (await marketplace.purchaseItem(item.itemId, { value: item.totalPrice }))
 
    toast.info("Wait till transaction Confirms....", {
     position: "top-center"
@@ -51,6 +58,7 @@ function NFTs({ marketplace, setNFTitem}) {
   await tx.wait();
 
     setNFTitem(item)
+    setToggle(true);
     item.viewitem =true;
   }
 
@@ -67,13 +75,15 @@ function NFTs({ marketplace, setNFTitem}) {
   )
 
   return (
-    <div className='flex flex-wrap gradient-bg-welcome   gap-10 justify-center pt-24 pb-5 px-16'>
+    <>
+    {toggle ? <Info nftitem={nftitem} setToggle={setToggle} /> :
+   ( <div className='flex flex-wrap gradient-bg-welcome   gap-10 justify-center pt-24 pb-5 px-16'>
          {
      ( items.length > 0 ?
     
             items.map((item, idx) => (
               
-              <Cards item={item} buyMarketItem={buyMarketItem} marketplace={marketplace} />
+              <Cards item={item} buyMarketItem={buyMarketItem} setToggle={setToggle} marketplace={marketplace} />
 
              
             ))
@@ -83,7 +93,9 @@ function NFTs({ marketplace, setNFTitem}) {
             <h2 className='text-white'>No listed assets</h2>
           </main>
         ) )}
-    </div>
+    </div>)
+     }
+     </>
   )
 }
 
